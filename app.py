@@ -4,7 +4,7 @@ import pandas as pd
 
 app = Flask(__name__, template_folder="templates")
 
-# 🔹 Create "uploads" folder dynamically (Render does not allow persistent storage)
+# Create "uploads" folder dynamically (Render does not allow persistent storage)
 UPLOAD_FOLDER = "/tmp/uploads"
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
@@ -25,13 +25,18 @@ def upload_file():
         file.save(file_path)  # Save file temporarily in /tmp/uploads
 
         try:
-            # 🔹 Read Excel file (Make sure openpyxl is installed)
+            # Read Excel file (Ensure openpyxl is installed)
             df = pd.read_excel(file_path, engine="openpyxl")  
-            
-            # 🔹 Process the file (for now, just returning the column names)
-            columns = df.columns.tolist()
 
-            return f"✅ File uploaded successfully! Columns: {columns}"
+            # Check if required columns exist
+            if 'ASIN' not in df.columns or 'Ranking' not in df.columns:
+                return "❌ Missing 'ASIN' or 'Ranking' column!", 400
+
+            # Extract ASINs and Rankings
+            asin_data = df[['ASIN', 'Ranking']]
+
+            # Show extracted data (you can process it further as needed)
+            return render_template("index.html", table_data=asin_data.to_html(), message="✅ File uploaded successfully!")
 
         except Exception as e:
             return f"❌ Error processing file: {str(e)}", 500
