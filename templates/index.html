@@ -1,14 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Amazon ASIN Rank Fetcher</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Excel</title>
 </head>
 <body>
-    <h1>Amazon ASIN Rank Fetcher</h1>
-    <form action="/" method="post" enctype="multipart/form-data">
-        <label>Select Excel File (ASIN List):</label>
+    <h1>Upload an Excel File</h1>
+    <form method="POST" enctype="multipart/form-data">
         <input type="file" name="file" required>
         <button type="submit">Upload & Fetch Rankings</button>
     </form>
+
+    {% if table_data %}
+        <h2>Extracted Data</h2>
+        <div>{{ table_data|safe }}</div>
+    {% endif %}
+
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
 </body>
 </html>
